@@ -6,8 +6,9 @@
 
 # AWS 자격 증명
 .aws/
+!petplace-key.pem
 *.pem
-petplace-key.pem
+!./petplace-key.pem
 
 # 로그 파일들
 *.log
