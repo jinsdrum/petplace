@@ -15,7 +15,7 @@ ENV REACT_APP_ADSENSE_CLIENT_ID=$REACT_APP_ADSENSE_CLIENT_ID
 COPY package*.json ./
 
 # 의존성 설치
-RUN npm ci --only=production
+RUN npm ci
 
 # 소스 코드 복사
 COPY . .
