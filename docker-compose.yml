@@ -1,21 +1,21 @@
 version: '3.8'
 
 services:
-  # PostgreSQL 데이터베이스
-  db:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_DB: petplace_db
-      POSTGRES_USER: petplace_user
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-your_secure_password}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-    networks:
-      - petplace_network
-    restart: unless-stopped
+  # PostgreSQL 데이터베이스 (RDS 사용으로 비활성화)
+  # db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_DB: petplace_db
+  #     POSTGRES_USER: petplace_user
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-your_secure_password}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #     - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - petplace_network
+  #   restart: unless-stopped
 
   # Flask 백엔드
   backend:
@@ -24,11 +24,9 @@ services:
       dockerfile: Dockerfile
     environment:
       - FLASK_ENV=production
-      - DATABASE_URL=postgresql://petplace_user:${DB_PASSWORD:-your_secure_password}@db:5432/petplace_db
+      - DATABASE_URL=postgresql://${DB_USER:-petplace_admin}:${DB_PASSWORD:-PetPlace2025!}@${DB_HOST:-petplace-db.cpuw4w8giin7.ap-northeast-2.rds.amazonaws.com}:${DB_PORT:-5432}/${DB_NAME:-petplace}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-secret-jwt-key}
       - SECRET_KEY=${SECRET_KEY:-your-secret-key}
-    depends_on:
-      - db
     ports:
       - "5000:5000"
     networks:
