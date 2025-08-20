@@ -3,6 +3,14 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Build arguments
+ARG REACT_APP_API_URL
+ARG REACT_APP_ADSENSE_CLIENT_ID
+
+# Set environment variables from build args
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+ENV REACT_APP_ADSENSE_CLIENT_ID=$REACT_APP_ADSENSE_CLIENT_ID
+
 # package.json과 package-lock.json 복사
 COPY package*.json ./
 

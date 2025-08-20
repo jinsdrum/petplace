@@ -19,9 +19,7 @@ services:
 
   # Flask 백엔드
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ${ECR_REGISTRY:-365458640975.dkr.ecr.ap-northeast-2.amazonaws.com}/petplace-backend:latest
     environment:
       - FLASK_ENV=production
       - DATABASE_URL=postgresql://${DB_USER:-petplace_admin}:${DB_PASSWORD:-PetPlace2025!}@${DB_HOST:-petplace-db.cpuw4w8giin7.ap-northeast-2.rds.amazonaws.com}:${DB_PORT:-5432}/${DB_NAME:-petplace}
@@ -31,18 +29,11 @@ services:
       - "5000:5000"
     networks:
       - petplace_network
-    volumes:
-      - ./backend:/app
     restart: unless-stopped
 
   # React 프론트엔드
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    environment:
-      - REACT_APP_API_URL=https://xn--2q1b33lznbu5v.xn--h32bi4v.xn--3e0b707e/api
-      - REACT_APP_ADSENSE_CLIENT_ID=${ADSENSE_CLIENT_ID:-ca-pub-xxxxxxxxxxxxxxxxx}
+    image: ${ECR_REGISTRY:-365458640975.dkr.ecr.ap-northeast-2.amazonaws.com}/petplace-frontend:latest
     volumes:
       - frontend_build:/var/www/html
     depends_on:
