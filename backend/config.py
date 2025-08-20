@@ -12,7 +12,7 @@ class Config:
     
     # Database
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'postgresql://postgres:Ajnod1524#@pet-platform-db1.cpuw4w8giin7.ap-northeast-2.rds.amazonaws.com:5432/petplatformdb'
+        f"postgresql://{os.environ.get('DB_USER', 'petplace_admin')}:{os.environ.get('DB_PASSWORD', 'PetPlace2025!')}@{os.environ.get('DB_HOST', 'localhost')}:{os.environ.get('DB_PORT', '5432')}/{os.environ.get('DB_NAME', 'petplace')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', 'False').lower() == 'true'
     

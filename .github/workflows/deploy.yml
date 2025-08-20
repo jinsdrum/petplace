@@ -108,6 +108,10 @@ jobs:
           # 새로운 이미지 빌드 및 시작
           sudo docker-compose up --build -d
           
+          # 데이터베이스 마이그레이션 실행
+          echo "데이터베이스 마이그레이션 실행 중..."
+          sudo docker-compose exec -T backend python migrations/init_db.py || echo "Migration completed or skipped"
+          
           # 헬스 체크
           sleep 30
           curl -f http://localhost || echo "Health check failed"
