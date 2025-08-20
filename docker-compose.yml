@@ -41,12 +41,32 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      - REACT_APP_API_URL=http://backend:5000
+      - REACT_APP_API_URL=https://13.209.242.211/api
       - REACT_APP_ADSENSE_CLIENT_ID=${ADSENSE_CLIENT_ID:-ca-pub-xxxxxxxxxxxxxxxxx}
+    volumes:
+      - frontend_build:/var/www/html
     depends_on:
       - backend
+    networks:
+      - petplace_network
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy with SSL
+  nginx:
+    image: nginx:alpine
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl.conf:/etc/nginx/conf.d/ssl.conf:ro
+      - /etc/ssl/certs/petplace-selfsigned.crt:/etc/ssl/certs/petplace-selfsigned.crt:ro
+      - /etc/ssl/private/petplace-selfsigned.key:/etc/ssl/private/petplace-selfsigned.key:ro
+      - /etc/ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+      - frontend_build:/var/www/html:ro
+    depends_on:
+      - frontend
+      - backend
     networks:
       - petplace_network
     restart: unless-stopped
@@ -69,3 +89,4 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  frontend_build:

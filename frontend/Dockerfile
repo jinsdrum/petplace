@@ -15,17 +15,20 @@ COPY . .
 # 프로덕션 빌드
 RUN npm run build
 
-# Nginx 단계
-FROM nginx:alpine
+# 경량 배포 단계
+FROM alpine:latest
 
-# 빌드된 파일을 nginx로 복사
-COPY --from=builder /app/build /usr/share/nginx/html
+# 빌드된 파일을 공유 볼륨으로 복사하기 위한 스크립트
+COPY --from=builder /app/build /build
 
-# nginx 설정 파일 복사
-COPY nginx.conf /etc/nginx/nginx.conf
+# 빌드 파일을 공유 볼륨에 복사하는 스크립트 생성
+RUN echo '#!/bin/sh' > /copy-build.sh && \
+    echo 'cp -r /build/* /var/www/html/' >> /copy-build.sh && \
+    echo 'sleep 3600' >> /copy-build.sh && \
+    chmod +x /copy-build.sh
 
-# 포트 80 노출
-EXPOSE 80
+# 공유 볼륨 마운트 포인트
+VOLUME ["/var/www/html"]
 
-# nginx 시작
-CMD ["nginx", "-g", "daemon off;"]
+# 스크립트 실행
+CMD ["/copy-build.sh"]
