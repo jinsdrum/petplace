@@ -14,8 +14,8 @@ ENV REACT_APP_ADSENSE_CLIENT_ID=$REACT_APP_ADSENSE_CLIENT_ID
 # package.json과 package-lock.json 복사
 COPY package*.json ./
 
-# 의존성 설치
-RUN npm ci
+# 의존성 설치 (package-lock.json 불일치 시 자동 해결)
+RUN npm install --legacy-peer-deps
 
 # 소스 코드 복사
 COPY . .
