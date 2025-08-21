@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Eye, EyeOff, User, Lock, AlertCircle } from 'lucide-react';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -8,7 +8,7 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToSignup }) => {
-  const { login } = useContext(AuthContext);
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
